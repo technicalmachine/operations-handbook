@@ -1,0 +1,6 @@
+---
+- name: reload nginx
+  service: name=nginx state=restarted
+
+- name: restart rampart-bounce
+  supervisorctl: name=rampart-bounce state=restarted

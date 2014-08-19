@@ -1,0 +1,11 @@
+- name: ssh directory
+  file: path=/root/.ssh/ state=directory
+
+- name: ssh keys
+  copy: src=authorized_keys dest=/root/.ssh/authorized_keys
+
+- name: install basic utilities
+  apt: pkg={{item}} state=present
+  with_items:
+   - byobu
+   - htop

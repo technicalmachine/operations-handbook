@@ -1,0 +1,9 @@
+---
+- hosts: rampart.tessel.io
+  roles: 
+   - common
+   - rampart-master
+
+- hosts: rampart.local
+  roles:
+   - common

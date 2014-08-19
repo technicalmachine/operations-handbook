@@ -1,0 +1,26 @@
+---
+- name: Installs nginx web server
+  apt: pkg=nginx state=installed update_cache=true
+
+- name: Install supervisord
+  apt: pkg=supervisor state=installed update_cache=true
+
+- user: name=rampart-bounce generate_ssh_key=yes ssh_key_bits=2048
+
+- name: rampart-bounce supervisord config
+  copy: src=rampart-bounce.conf dest=/etc/supervisor/conf.d/rampart-bounce.conf
+  notify:
+    - restart rampart-bounce
+
+- name: nginx ssl directory
+  file: path=/etc/nginx/ssl state=directory
+
+- name: create self-signed SSL cert
+  command: openssl req -new -nodes -x509 -subj "/C=US/ST=/L=/O=IT/CN={{ansible_fqdn}}" -days 3650 -keyout /etc/nginx/ssl/{{ansible_fqdn}}.key -out /etc/nginx/ssl/{{ansible_fqdn}}.crt -extensions v3_ca creates=/etc/nginx/ssl/{{ansible_fqdn}}.crt
+  notify:
+    - reload nginx
+
+- name: rampart nginx config
+  copy: src=nginx.conf dest=/etc/nginx/sites-enabled/rampart.conf
+  notify:
+    - reload nginx

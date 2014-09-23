@@ -1,8 +1,14 @@
 ---
 - hosts: rampart.tessel.io
   roles: 
+   - ssl
    - common
    - rampart-master
+  vars_prompt:
+    - name: ssl_passphrase
+      prompt: "Enter SSL Certificate Passphrase"
+      private: false
+
 
 - hosts: rampart.local
   roles:

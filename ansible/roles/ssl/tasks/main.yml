@@ -1,0 +1,11 @@
+- name: nginx ssl directory
+  file: path=/etc/nginx/ssl state=directory
+
+- name: cpy ssh key
+  copy: src=tessel.key dest=/etc/nginx/ssl/tessel_encrypted.key
+
+- name: cpy ssh cert
+  copy: src=tessel.pem dest=/etc/nginx/ssl/tessel.pem
+
+- name: decrypt ssh key
+  command: openssl rsa -in /etc/nginx/ssl/tessel_encrypted.key -out /etc/nginx/ssl/tessel.key -passin pass:{{ssl_passphrase}} creates=/etc/nginx/ssl/tessel.key

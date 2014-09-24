@@ -13,3 +13,15 @@
 - hosts: rampart.local
   roles:
    - common
+
+- hosts: projects.tessel.io
+  roles:
+   - common
+
+- hosts: forums.tessel.io
+  roles:
+   - common
+
+- hosts: auth.tessel.io
+  roles:
+   - common

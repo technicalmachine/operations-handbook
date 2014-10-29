@@ -3,3 +3,4 @@ rampart.local ansible_ssh_host=1101cowper.technical.io ansible_ssh_port=22022 an
 projects.tessel.io ansible_ssh_user=root
 forums.tessel.io ansible_ssh_user=root
 auth.tessel.io ansible_ssh_user=root
+ops.tessel.io ansible_ssh_host=104.131.157.138 ansible_ssh_user=root

@@ -2,7 +2,7 @@
   file: path=/root/.ssh/ state=directory
 
 - name: ssh keys
-  copy: src=authorized_keys dest=/root/.ssh/authorized_keys
+  copy: src=authorized_keys dest=/root/.ssh/authorized_keys mode=644
 
 - name: install basic utilities
   apt: pkg={{item}} state=present

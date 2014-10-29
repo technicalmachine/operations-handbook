@@ -25,3 +25,13 @@
 - hosts: auth.tessel.io
   roles:
    - common
+
+- hosts: ops.tessel.io
+  roles:
+   - ssl
+   - common
+   - whiplash
+  vars_prompt:
+    - name: ssl_passphrase
+      prompt: "Enter SSL Certificate Passphrase"
+      private: false

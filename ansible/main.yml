@@ -1,6 +1,6 @@
 ---
 - hosts: rampart.tessel.io
-  roles: 
+  roles:
    - ssl
    - common
    - rampart-master
@@ -20,6 +20,11 @@
 
 - hosts: forums.tessel.io
   roles:
+   - common
+
+- hosts: shop.tessel.io
+  roles:
+   - ssl
    - common
 
 - hosts: auth.tessel.io

@@ -10,7 +10,7 @@
 - name: decrypt ssl key
   command: openssl rsa -in /etc/nginx/ssl/tessel_encrypted.key -out /etc/nginx/ssl/tessel.key -passin pass:{{ssl_passphrase}} creates=/etc/nginx/ssl/tessel.key
 
-- name: rampart nginx config
+- name: ssl common configuration
   copy: src=nginx.conf dest=/etc/nginx/ssl/tessel.inc
   notify:
     - reload nginx

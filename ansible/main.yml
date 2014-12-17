@@ -9,7 +9,6 @@
       prompt: "Enter SSL Certificate Passphrase"
       private: false
 
-
 - hosts: rampart.local
   roles:
    - common
@@ -26,6 +25,11 @@
   roles:
    - ssl
    - common
+   - shop
+  vars_prompt:
+    - name: ssl_passphrase
+      prompt: "Enter SSL Certificate Passphrase"
+      private: false
 
 - hosts: auth.tessel.io
   roles:

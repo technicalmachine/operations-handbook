@@ -1,6 +1,6 @@
 ---
 - hosts: rampart.tessel.io
-  roles: 
+  roles:
    - ssl
    - common
    - rampart-master
@@ -8,7 +8,6 @@
     - name: ssl_passphrase
       prompt: "Enter SSL Certificate Passphrase"
       private: false
-
 
 - hosts: rampart.local
   roles:
@@ -21,6 +20,16 @@
 - hosts: forums.tessel.io
   roles:
    - common
+
+- hosts: shop.tessel.io
+  roles:
+   - ssl
+   - common
+   - shop
+  vars_prompt:
+    - name: ssl_passphrase
+      prompt: "Enter SSL Certificate Passphrase"
+      private: false
 
 - hosts: auth.tessel.io
   roles:

@@ -2,6 +2,7 @@ rampart.tessel.io ansible_ssh_user=root
 rampart.local ansible_ssh_host=1101cowper.technical.io ansible_ssh_port=22022 ansible_ssh_user=root
 projects.tessel.io ansible_ssh_user=root
 forums.tessel.io ansible_ssh_user=root
+forums2.tessel.io ansible_ssh_user=root
 auth.tessel.io ansible_ssh_user=root
 ops.tessel.io ansible_ssh_host=104.131.157.138 ansible_ssh_user=root
 shop.tessel.io ansible_ssh_host=104.236.107.95 ansible_ssh_user=root

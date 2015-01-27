@@ -21,6 +21,17 @@
   roles:
    - common
 
+- hosts: forums2.tessel.io
+  roles:
+   - common
+   - ssl
+   - discourse
+
+  vars_prompt:
+    - name: ssl_passphrase
+      prompt: "Enter SSL Certificate Passphrase"
+      private: false
+
 - hosts: shop.tessel.io
   roles:
    - ssl

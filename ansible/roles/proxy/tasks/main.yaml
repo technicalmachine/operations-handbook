@@ -16,31 +16,6 @@
 - name: Forward port
   command: iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 443 -j REDIRECT --to-port 5005
 
-# - name: Install ferm
-#   apt:
-#     name=ferm
-#     state=present
-
-# - name: Add ferm config directory
-#   file:
-#     path=/etc/ferm
-#     state=directory
-#     owner=root group=root mode=0700
-
-# - name: Add ferm config directory for additional config files
-#   file:
-#     path=/etc/ferm/ferm.d
-#     state=directory
-#     owner=root group=root mode=0700
-
-# - name: Upload ferm config
-#   copy:
-#     dest=/etc/ferm/ferm.conf
-#     src=/files/ferm.conf
-#     owner=root group=root mode=0700
-#   notify:
-#     - run ferm
-
 - user: name=tesselproxy
 
 - name: ssh directory

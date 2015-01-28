@@ -44,3 +44,8 @@
     - name: ssl_passphrase
       prompt: "Enter SSL Certificate Passphrase"
       private: false
+
+- hosts: proxy.tessel.io
+  roles:
+   - common
+   - proxy

@@ -1,0 +1,71 @@
+- name: Install supervisord
+  apt: pkg=supervisor state=installed
+
+- name: Install git
+  apt: pkg=git state=installed
+
+- name: Install node
+  apt: pkg=nodejs state=installed
+
+- name: Install node legacy
+  apt: pkg=nodejs-legacy state=installed
+
+- name: Install npm
+  apt: pkg=npm state=installed
+
+- name: Forward port
+  command: iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 443 -j REDIRECT --to-port 5005
+
+# - name: Install ferm
+#   apt:
+#     name=ferm
+#     state=present
+
+# - name: Add ferm config directory
+#   file:
+#     path=/etc/ferm
+#     state=directory
+#     owner=root group=root mode=0700
+
+# - name: Add ferm config directory for additional config files
+#   file:
+#     path=/etc/ferm/ferm.d
+#     state=directory
+#     owner=root group=root mode=0700
+
+# - name: Upload ferm config
+#   copy:
+#     dest=/etc/ferm/ferm.conf
+#     src=/files/ferm.conf
+#     owner=root group=root mode=0700
+#   notify:
+#     - run ferm
+
+- user: name=tesselproxy
+
+- name: ssh directory
+  file: path=/home/tesselproxy/.ssh/ state=directory
+
+- name: Authorized keys
+  copy: src=../../common/files/authorized_keys dest=/home/tesselproxy/.ssh/authorized_keys owner=tesselproxy mode=0600
+
+- name: Init git repository
+  command: su tesselproxy -c 'git init /home/tesselproxy/proxy' creates=/home/tesselproxy/proxy
+
+- name: Add git hook
+  copy: src=post-receive.sh dest=/home/tesselproxy/proxy/.git/hooks/post-receive mode=0755 owner=tesselproxy
+
+- name: proxy restart permission
+  lineinfile: "dest=/etc/sudoers.d/proxy owner=root group=root mode=0440
+              line='proxy ALL=(ALL) NOPASSWD: /usr/bin/supervisorctl'
+              state=present
+              create=yes
+              validate='visudo -cf %s'"
+
+- name: save ip tables
+  command: iptables-save
+
+- name: proxy supervisor config
+  copy: src=proxy.conf dest=/etc/supervisor/conf.d/proxy.conf
+  notify:
+    - restart proxy

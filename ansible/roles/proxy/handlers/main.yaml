@@ -1,0 +1,3 @@
+---
+- name: restart proxy
+  supervisorctl: name=tesselproxy state=restarted

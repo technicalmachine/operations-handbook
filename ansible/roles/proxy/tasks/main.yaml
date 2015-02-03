@@ -40,6 +40,12 @@
 - name: save ip tables
   command: iptables-save
 
+- name: add bash script
+  copy: src=launch.sh dest=/home/tesselproxy/proxy/launch.sh
+
+- name: change permissions on script
+  command: chmod +x /home/tesselproxy/proxy/launch.sh
+
 - name: proxy supervisor config
   copy: src=proxy.conf dest=/etc/supervisor/conf.d/proxy.conf
   notify:

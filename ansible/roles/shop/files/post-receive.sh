@@ -9,4 +9,5 @@ npm install --status=info
 npm run bower --status=info -y
 EOF
 npm run build --status=info
+sudo supervisorctl stop all
 sudo supervisorctl restart shop

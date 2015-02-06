@@ -18,3 +18,7 @@
   with_items:
    - byobu
    - htop
+
+# For DigitalOcean console access. The password is on Mitro.
+- name: set root password
+  user: name=root password=$6$vr6VYKBSOXpn$6EExGr5Wll3QD3n9yseWjnRFCGbkhgKzDi.IuTyXmpuOq4EmARgYBx3PEwkNfw5zy8VXI9vNMI4Er3vUGLV/w1

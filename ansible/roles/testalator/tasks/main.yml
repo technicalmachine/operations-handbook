@@ -1,0 +1,58 @@
+---
+- name: Installs nginx web server
+  apt: pkg=nginx state=installed
+
+- name: Install supervisord
+  apt: pkg=supervisor state=installed
+
+- name: Install git
+  apt: pkg=git state=installed
+
+- name: Install node
+  apt: pkg=nodejs state=installed
+
+- name: Install node legacy
+  apt: pkg=nodejs-legacy state=installed
+
+- name: Install npm
+  apt: pkg=npm state=installed
+
+- name: update apt-get
+  command: sudo apt-get update
+
+- name: Make mongodb data dir
+  command: mkdir -p /data/db
+
+- name: Install mongo
+  apt: pkg=mongodb state=installed
+
+- name: install s3 cmd
+  apt: pkg=s3cmd state=installed
+
+- name: Make backup dir
+  command: mkdir -p /home/testalator/backups
+
+- name: configure backup
+  copy: src=backup.sh dest=/home/testalator/backups/backup.sh
+
+- name: backup cron job
+  cron: name="backup" minute="0" hour="0" job="./home/testalator/backups/backup.sh"
+
+- name: ssh directory
+  file: path=/home/testalator/.ssh/ state=directory
+
+- name: backup directory
+  file: path=/home/testalator/backups state=directory
+
+- name: Authorized keys
+  copy: src=../../common/files/authorized_keys dest=/home/testalator/.ssh/authorized_keys
+
+- name: testalator nginx config
+  copy: src=nginx.conf dest=/etc/nginx/sites-enabled/testalator.conf
+  notify:
+    - reload nginx
+
+- name: testalator supervisord config
+  copy: src=testalator.conf dest=/etc/supervisor/conf.d/testalator.conf
+  notify:
+    - restart testalator

@@ -5,3 +5,5 @@ forums.tessel.io ansible_ssh_user=root
 auth.tessel.io ansible_ssh_user=root
 ops.tessel.io ansible_ssh_host=104.131.157.138 ansible_ssh_user=root
 shop.tessel.io ansible_ssh_host=104.236.107.95 ansible_ssh_user=root
+testalator.tessel.io ansible_ssh_host=128.199.97.104 ansible_ssh_user=root
+testalator-stage.tessel.io ansible_ssh_host=128.199.97.104 ansible_ssh_user=root

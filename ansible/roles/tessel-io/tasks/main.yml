@@ -1,0 +1,92 @@
+---
+- set_fact: dokku_git_repo=https://github.com/progrium/dokku.git
+
+- set_fact: dokku_version=HEAD
+
+- set_fact: host_name=dokku.tessel.io
+
+- name: Ensure LC_ALL is set to fix annoying local errors on pristine server
+  lineinfile: dest=/etc/environment
+              line="LC_ALL=en_US.UTF-8"
+              state=present
+
+- name: Ensure LANG is set to fix annoying local errors on pristine server
+  lineinfile: dest=/etc/environment
+              line="LANG=en_US.UTF-8"
+              state=present
+
+- name: Install packages
+  apt: pkg={{ item }} state=latest
+       update_cache=yes
+  with_items: ['aufs-tools', 'build-essential', 'git', 'software-properties-common']
+
+- name: Update all package definitions and upgrade all installed packages
+  apt: upgrade=dist
+
+- name: Refresh dokku repository, cloning it if non-existent
+  git: repo={{ dokku_git_repo }}
+       dest=/root/dokku
+       version={{ dokku_version }}
+
+- name: Install dokku from the latest repo version
+  command: sudo /usr/bin/make install
+           chdir=/root/dokku
+
+- name: Download dokku user-env-compile plugin
+  git: repo=https://github.com/motin/dokku-user-env-compile.git
+       dest=/var/lib/dokku/plugins/user-env-compile
+       version=HEAD
+
+- name: Install dokku user-env-compile plugin
+  command: dokku plugins-install
+
+- name: Set up authorized_keys for dokku user
+  # TODO: The last touch is a hack, 'creates' should do it for us... but that doesn't work for some reason.
+  shell: echo {{ item }} | sudo sshcommand acl-add dokku progrium && touch /home/dokku/.acl-add-done
+         creates=/home/dokku/.acl-add-done
+  with_lines:
+    - cat authorized_keys
+
+- name: dokku ssl/tls directory
+  file: path=/home/dokku/tls state=directory
+
+- name: copy ssl key
+  copy: src=server.key dest=/home/dokku/tls/server_encrypted.key
+
+- name: copy ssl cert
+  copy: src=server.crt dest=/home/dokku/tls/server.crt
+
+- name: decrypt ssl key
+  command: openssl rsa -in /home/dokku/tls/server_encrypted.key -out /home/dokku/tls/server.key -passin pass:{{ssl_passphrase}} creates=/home/doku/tls/server.key
+
+- name: Make sure the VHOST file is set up correctly.
+  copy: content={{ host_name }}
+        dest=/home/dokku/VHOST
+        force=yes
+
+- name: Make sure the HOSTNAME file is set up correctly.
+  copy: content={{ host_name }}
+        dest=/home/dokku/HOSTNAME
+        force=yes
+
+- name: Copy over ssl dokky.conf
+  copy: src=dokku.conf
+        dest=/etc/nginx/conf.d/dokku.conf
+        force=yes
+
+- name: Copy custom default nginx configuration to sites
+  copy: src=nginx.conf dest=/etc/nginx/sites-available/{{ host_name }}
+
+- name: Disable the existing default nginx site
+  file: path=/etc/nginx/sites-enabled/default
+        state=absent
+
+- name: Enable the custom default nginx site
+  file: src=/etc/nginx/sites-available/{{ host_name }}
+        dest=/etc/nginx/sites-enabled/{{ host_name }}
+        state=link
+        force=yes
+
+- name: Reload nginx configuration
+  service: name=nginx
+           state=reloaded

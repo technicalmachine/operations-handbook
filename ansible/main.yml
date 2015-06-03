@@ -44,3 +44,12 @@
     - name: ssl_passphrase
       prompt: "Enter SSL Certificate Passphrase"
       private: false
+
+- hosts: dokku.tessel.io
+  roles:
+    - common
+    - tessel-io
+  vars_prompt:
+    - name: ssl_passphrase
+      prompt: "Enter SSL Certificate Passphrase"
+      private: false
